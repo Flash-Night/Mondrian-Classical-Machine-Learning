@@ -1,0 +1,32 @@
+This directory contains the dataset of formal representations of Piet
+Mondrian's Neo-plastic paintings used in:
+
+Inferring Compositional Style in the Neo-plastic Paintings of Piet
+Mondrian by Machine Learning
+David Andrzejewski, David G. Stork, Xiaojin Zhu, and Ron Spronk. 
+Electronic Imaging: Computer Image Analysis in the Study of Art (SPIE 2010)
+
+
+Individual Files
+
+MondriansAndTransatlantics.mat
+MATLAB data file containing the names and formal representations for
+46 Neo-plastic Mondrian paintings (final versions) and 11
+Transatlantic Neo-plastic paintings (earlier states).  The workspace
+variables are:
+-names = painting names
+-reps = painting formal representations 
+-labels = 1 for final versions, -1 for Transatlantic underdrawings
+
+
+MakeImageCatalog.m 
+Running this MATLAB script will render all paintings, and save them
+to the current directory as *.eps files.
+
+
+draw_img.m and draw_rect.m
+MATLAB helper functions for MakeImageCatalog.m
+
+
+Questions/comments/bugs
+Please contact David Andrzejewski (andrzeje@cs.wisc.edu)
