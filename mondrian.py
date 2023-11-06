@@ -11,7 +11,16 @@ import matplotlib.patches as pch
 
 COLORLIST=['','white','r','gold','b','black']
 
-annots = loadmat('MondrianData\MondriansAndTransatlantics.mat')
+# The neo-plastic paintings of Piet Mondrian (1872–1944) are simple but subtle abstract compositions. 
+# Each composition consists solely of horizontal and vertical black lines and adjacent rectangles of 
+# uniform red, yellow, blue and black on a white background. Such a series, with no complex colors 
+# like green or brown, no curves, no brightness changes, no explicit depth rendering, may be suitable 
+# for analyzing with classical machine learning methods of its composition and trying to create new painting 
+# of Mondrian style.
+
+# Albert LI
+
+annots = loadmat('C:\Study-cityu\y1-semA\machine learning\Mondrian sklearn\MondrianData\MondriansAndTransatlantics.mat')
 fig, ax = plt.subplots()
 
 kmeans=KMeans(n_clusters=3, random_state=9, n_init=10)
@@ -22,7 +31,7 @@ colorClassifier=KNeighborsClassifier(n_neighbors=3,weights='distance')
 # 'labels', 'names', 'reps'; 45 Images
 # 0-height, 1-width, 2-vertical points, 3-vext, 4-vthick, 5-horizontal points, 6-hext, 7-hthick, 8-rect, 9-colors
 
-
+# 1. Interpretation of dataset, visualization of images
 def getData(index):
     painting=annots['reps'][0][index]
     print(annots['names'][0][index][0])
@@ -46,7 +55,6 @@ def getData(index):
             rectangles[i][j]=int(rectangles[i][j])-1
     colors=painting[9][0]
     return height, width, vpoints, vext, vthick, hpoints, hext, hthick, rectangles, colors
-
 
 def draw(height, width, vpoints, vext, vthick, hpoints, hext, hthick, rectangles, colors):
     plt.axis("equal")
@@ -90,7 +98,7 @@ def draw(height, width, vpoints, vext, vthick, hpoints, hext, hthick, rectangles
         ax.add_patch(rect)
 
 
-
+# 2. Attempt to use Kmeans clustering to find the focus of paintings
 def kmeansDraw(height, width, vpoints, vext, vthick, hpoints, hext, hthick, rectangles, colors):
     rectpoints=[]
     rectdata=[]
@@ -129,18 +137,16 @@ def kmeansDraw(height, width, vpoints, vext, vthick, hpoints, hext, hthick, rect
         cir=pch.Circle(xy=(plotx,ploty),radius=10,color='greenyellow')
         ax.add_patch(cir)
 
-
-# Kmeans test
-# 40, 23, 0, 15
+# Kmeans test, with samples 40, 23, 0
 
 # imgindex=40
 # height, width, vpoints, vext, vthick, hpoints, hext, hthick, rectangles, colors=getData(imgindex)
 # draw(height, width, vpoints, vext, vthick, hpoints, hext, hthick, rectangles, colors)
 # kmeansDraw(height, width, vpoints, vext, vthick, hpoints, hext, hthick, rectangles, colors)
+# plt.show()
 
 
-
-
+# 3 & 4. Using K-neighbors regression and classification to generate a new painting
 def train():
     vx,vy,hx,hy,nbx,nby=[],[],[],[],[],[]
 
@@ -277,12 +283,13 @@ def predict(height,width,vcount,hcount):
             longest=[v,1,i+1]
     hext.append([1,vcount+2])
 
-    # Ensure at least one through line, and remove singular lines
+    # Ensure at least one through line
     if longest[1]==0:
         vext[longest[2]]=[1,hcount+2]
     else:
         hext[longest[2]]=[1,vcount+2]
     
+    # Apply de-singularization
     for k in range(10):
         singulars=0
         for i in range(2,len(vext)):
@@ -323,7 +330,6 @@ def predict(height,width,vcount,hcount):
     return height, width, vpoints, vext, vthick, hpoints, hext, hthick, rectangles, colors
 
 
-
 # Image Generation Test
 # 500,500,1,3
 # 800,900,2,9
@@ -335,4 +341,3 @@ train()
 height, width, vpoints, vext, vthick, hpoints, hext, hthick, rectangles, colors = predict(600,400,5,4)
 draw(height, width, vpoints, vext, vthick, hpoints, hext, hthick, rectangles, colors)
 plt.show()
-
